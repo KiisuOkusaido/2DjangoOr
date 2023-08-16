@@ -1,0 +1,41 @@
+name: MSDO windows-latest
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  sample:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v2
+        with:
+          dotnet-version: '6.0.x'
+
+      - name: Run Microsoft Security DevOps Analysis Tool 1
+        id: msdo_tool1
+        uses: microsoft/security-devops-action-tool1@preview
+
+      - name: Run Microsoft Security DevOps Analysis Tool 2
+        id: msdo_tool2
+        uses: microsoft/security-devops-action-tool2@preview
+
+      - name: Upload findings from Tool 1 to Security tab
+        uses: github/codeql-action/upload-sarif@v2
+        with:
+          sarif_file: ${{ steps.msdo_tool1.outputs.sarifFile }}
+          tool_name: Tool1
+
+      - name: Upload findings from Tool 2 to Security tab
+        uses: github/codeql-action/upload-sarif@v2
+        with:
+          sarif_file: ${{ steps.msdo_tool2.outputs.sarifFile }}
+          tool_name: Tool2
