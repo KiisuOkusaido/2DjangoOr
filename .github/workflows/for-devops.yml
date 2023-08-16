@@ -1,0 +1,21 @@
+name: MSDO Analysis
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  msdo_analysis:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Run Microsoft Security DevOps Analysis
+        id: msdo
+        uses: microsoft/security-devops-action@preview
+
